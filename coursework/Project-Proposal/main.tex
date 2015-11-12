@@ -1,0 +1,49 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{notes2bib}
+
+\title{CS447 Project Idea - Detecting Stance in Tweets}
+\author{Bhargav Mangipudi (mangipu2), Vishaal Mohan (vmohan9)}
+\date{Fall 2015}
+
+\begin{document}
+
+\maketitle
+
+This project will focus on the problem of detecting stance in tweets. This is one of the tasks defined for the SemEval 2016 conference. The task defines the problem statement as we define stance detection to mean automatically determining from text whether the author is in favor of the given target, against the given target, or whether neither inference is likely. \\
+
+One example is for the target is 
+\begin{itemize}
+\item Target: legalization of abortion
+\item Tweet: A foetus has rights too! Make your voice heard.
+\end{itemize}
+
+The stance analysis would classify the tweet as against the given target. \\
+
+There has been some research into classifying stance in debates \cite{Hasan2013,Kiritchenko2014} and online texts\cite{PranavAn}. This project involves an application of sentiment analysis to the tweet medium. The 140-character limit and the implied brevity of speech increases the challenge here. Another important feature is the use of hashtags in tweets for representing a user’s stance. \\
+
+Our idea is to look at different sets of representation of the tweet content using the simple bag-of-words approach, the word vector approach \cite{Mikolov2013b, Mikolov2013, Mikolov2013a} and other related approaches. We would like to do a comprehensive study of different approaches to the problem and their relative performance on the test data. \\
+
+Since the contest submission is in the month of Jan 2016, if we get to a good state by the end of the course, we plan to tune the work and submit it to the contest. \\
+
+Link to the task page: \url{http://alt.qcri.org/semeval2016/task6/}
+
+Link to available dataset: \url{http://alt.qcri.org/semeval2016/task6/index.php?id=data-and-tools}
+\\
+
+\textbf{SemEval 2016 - Task Timeline for reference} \\
+Trial data ready - June 30, 2015 \\
+Training data ready - August 30, 2015 \\
+Test data ready - December 15, 2015 \\
+Evaluation start - January 10, 2016 \\
+Evaluation end - January 31, 2016 \\
+Paper submission due - February 28, 2016 [TBC] \\
+Paper reviews due - March 31, 2016 [TBC] \\
+Camera ready due - April 30, 2016 [TBC] \\
+SemEval workshop - Summer 2016
+
+\bibliographystyle{unsrt}
+\bibliography{sample}
+
+\end{document}
