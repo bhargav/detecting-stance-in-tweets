@@ -18,7 +18,7 @@ print "Number of items = ", len(dataset)
 
 # In[3]:
 
-glove_word_vec_file = "/Users/bhargav/Downloads/glove.twitter.27B/glove.twitter.27B.25d.txt"
+#glove_word_vec_file = "/Users/bhargav/Downloads/glove.twitter.27B/glove.twitter.27B.25d.txt"
 
 def readGloveData(glove_word_vec_file):
     f = open(glove_word_vec_file, 'r')
@@ -32,7 +32,7 @@ def readGloveData(glove_word_vec_file):
             
     return word_vec_dict
             
-word_vec_dict = readGloveData(glove_word_vec_file)
+# word_vec_dict = readGloveData(glove_word_vec_file)
 
 
 # In[4]:
@@ -53,12 +53,18 @@ def readTweets(fileName):
     tweetClass = []
     line = file.readline()
     for line in file:
-        raw_tweets.append(line.lower().strip().replace(',',' ').split())
+        raw_tweets.append(line.lower().strip().split('\t'))
     for tweet in raw_tweets:
-        if tweet[1] != 'atheism':
-            continue
+        tweet2 = []
+        tweet2.append(tweet[0])
+        tweet2.append(tweet[1])
+        tweet2.extend(tweet[2].strip().replace(',',' ').replace('.',' ').replace(':', ' ').split(' '))
+        tweet2.append(tweet[3])
+        # print tweet2
+        # if tweet[1] != 'atheism':
+        #     continue
         
-        tweets.append(tweet[1:len(tweet) - 1])
+        tweets.append(tweet2[1:len(tweet2) - 1])
         tweetClass.append(tweet[len(tweet) - 1])
     tweets.append(tweetClass)
     return tweets
@@ -67,20 +73,26 @@ def getTweetVectors(tweets):
     tweetVectors = []
     for tweet in tweets:
         #print getSumVectors(tweet, word_vec_dict)
-        tweetVectors.append(getSumVectors(tweet[1: len(tweet) - 1], word_vec_dict))
+        print tweet
+        tweetVectors.append(getSumVectors(tweet, word_vec_dict))
     return tweetVectors
 
-word_vec_dict = readGloveData('./glove.twitter.27B/glove.twitter.27B.25d.txt')
-tweets = readTweets('./dataset_raw/semeval2016-task6-trainingdata.txt')
 
 
-
-# In[24]:
-
-def getSumVectors(sentence, word_vec_dict):
+def getSumVectors(tweetData, word_vec_dict):
     numNonZero = 0
     vector = np.zeros_like(word_vec_dict['hi'])
-    for word in sentence:
+    tweet = tweetData[1:]
+    target = tweetData[0].split(' ')
+    for word in target:
+        #print word
+        vec = getWordVector(word, word_vec_dict)
+        vector = vector + vec
+        if vec.sum() != 0:
+            numNonZero += 1
+
+    for word in tweet:
+        print word
         vec = getWordVector(word, word_vec_dict)
         #print word, vec
         
@@ -95,6 +107,9 @@ def getSumVectors(sentence, word_vec_dict):
 
 
 # In[25]:
+
+word_vec_dict = readGloveData('./glove.twitter.27B/glove.twitter.27B.25d.txt')
+tweets = readTweets('./dataset_raw/semeval2016-task6-trainingdata.txt')
 
 tweetVectors = getTweetVectors(tweets[0:len(tweets) - 1])
 print tweets[0]
@@ -130,7 +145,7 @@ clf = OneVsRestClassifier(LinearSVC(random_state=0))
 X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, Y, test_size=0.3, random_state=0)
 
 clf.fit(X_train, y_train)
-clf.score(X_test, y_test)
+print clf.score(X_test, y_test)
 
 
 # In[ ]:
