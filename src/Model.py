@@ -7,4 +7,4 @@ class Model():
         self.tweet_content = tweet
         self.stance = stance
 
-        self.original_tweet_content = list(tweet)
+        self.original_tweet_content = tweet
