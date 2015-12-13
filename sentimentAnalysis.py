@@ -4,59 +4,16 @@ import enchant
 from nltk.stem import *
 from nltk.stem.porter import *
 
-class item(object):
-	def __init__(self):
-		self.spaces = []
-		self.isPhrase = bool()
-		self.isWord = bool()
-		self.initialize()
-	def initialize(self):
-		self.isPhrase = False
-		self.isWord = False
+# class item(object):
+# 	def __init__(self):
+# 		self.spaces = []
+# 		self.isPhrase = bool()
+# 		self.isWord = bool()
+# 		self.initialize()
+# 	def initialize(self):
+# 		self.isPhrase = False
+# 		self.isWord = False
 
-def InitializeWords():
-    wordlist = './wordlist' # A file containing common english words
-    content = None
-    with open(wordlist) as f:
-        content = f.readlines()
-    return [word.rstrip('\n') for word in content]
-
-
-def ParseSentence(sentence, wordlist):
-    new_sentence = "" # output    
-    terms = sentence.split(' ')    
-    for term in terms:
-        if term[0] == '#': # this is hashtag, parse it
-            new_sentence += ParseTag(term, wordlist)
-        else: # Just append the word
-            new_sentence += term
-        new_sentence += " "
-
-    return new_sentence 
-
-
-def ParseTag(term, wordlist):
-    words = []
-    # Remove hashtag, split by dash
-    tags = term[1:].split('-')
-    for tag in tags:
-        word = FindWord(tag, wordlist)    
-        while word != None and len(tag) > 0:
-            words += [word]            
-            if len(tag) == len(word): # Special case for when eating rest of word
-                break
-            tag = tag[len(word):]
-            word = FindWord(tag, wordlist)
-    return " ".join(words)
-
-
-def FindWord(token, wordlist):
-    i = len(token) + 1
-    while i > 1:
-        i -= 1
-        if token[:i] in wordlist:
-            return token[:i]
-    return None 
 
 # def splitWord(word, word_vec_dict):
 # 	d = enchant.Dict("en_US")
@@ -152,16 +109,9 @@ def getTaggedTweets(filename):
 
 def main():
 	sentiment = SentiWordNet('./SentiWordNet_3.0.0_20130122.txt')
-	taggedTweets = getTaggedTweets('./tweetsTagged.txt')
+	taggedTweets = getTaggedTweets('./splitTaggedTweets.txt')
 	word_vec_dict = oldWork.readGloveData('./glove.twitter.27B/glove.twitter.27B.25d.txt')
-	# stemmedTaggedTweets = getStemmedTweets(taggedTweets)
-	wordlist = InitializeWords()
-	sentence = "big #awesome-dayofmylife because #iamgreat"
-	# sentence = 'oklohoma'
-	splitSentence = ParseSentence(sentence, wordlist)
-	print splitSentence
-	# splitWord('hellohowareyou', word_vec_dict)
-
+	
 
 if __name__ == '__main__':
 	main()
