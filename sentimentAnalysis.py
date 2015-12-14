@@ -3,6 +3,7 @@ import IntermediateProjectWork as oldWork
 import enchant
 from nltk.stem import *
 from nltk.stem.porter import *
+import numpy as np
 
 # class item(object):
 # 	def __init__(self):
@@ -64,7 +65,14 @@ from nltk.stem.porter import *
 # 	for i in range(1, len(matrix[0][N-1].spaces)):
 # 		wordList.append(word[matrix[0][N-1].spaces[i-1]:matrix[0][N-1].spaces[i]])
 # 	print wordList
+# def getStemmedTweets(taggedTweets):
+# 	stemmer = PorterStemmer()
+# 	for tweet in taggedTweets:
+# 		print tweet['tweet']
+# 		stemmedTweet = [stemmer.stem(word) for word in tweet['tweet']]
+# 		print stemmedTweet
 
+# 	return taggedTweets
 
 def SentiWordNet(filename):
 	fileReader = open(filename)
@@ -86,14 +94,6 @@ def SentiWordNet(filename):
 				dictionary[word[:len(word) - 2]] = wordDict
 	return dictionary
 
-# def getStemmedTweets(taggedTweets):
-# 	stemmer = PorterStemmer()
-# 	for tweet in taggedTweets:
-# 		print tweet['tweet']
-# 		stemmedTweet = [stemmer.stem(word) for word in tweet['tweet']]
-# 		print stemmedTweet
-
-# 	return taggedTweets
 
 def getTaggedTweets(filename):
 	reader = open(filename)
@@ -101,17 +101,152 @@ def getTaggedTweets(filename):
 	for line in reader:
 		splitLine = line.strip().split('\t')
 		taggedTweet = {}
+		# print splitLine
 		taggedTweet['tweet'] = splitLine[0].split(' ')
 		taggedTweet['tags'] = splitLine[1].split(' ')
 		taggedTweet['confidence'] = splitLine[2].split(' ')
 		taggedTweets.append(taggedTweet)
 	return taggedTweets
 
+def readLexicon(filename):
+	# nrc = './nrc_unigram.txt'
+	# s140 = './s140_un'
+	dictionary = {}
+	reader = open(filename)
+	for line in reader:
+		split = line.strip().split('\t')
+		# print split
+		# word0 = split[0]
+		# if word0[0] == '#':
+		# 	word0 = word0[1:len(word0)]
+		# elif word0[0] == '@':
+		dictionary[split[0]] = split[1]
+	return dictionary
+	# print split[1]
+
+
+def addTarget(taggedTweets, filename):
+	reader = open(filename)
+	reader.readline()
+	for i in xrange(len(taggedTweets)):
+
+		line = reader.readline()
+		splitLine = line.strip().split('\t')
+		# print splitLine
+		taggedTweets[i]['target'] = splitLine[1]
+		taggedTweets[i]['stance'] = splitLine[len(splitLine) - 1]
+		# taggedTweet['stance'] = splitLine
+		# print taggedTweets[i]['target']
+	return taggedTweets
+
+def getFeatures(tweets, word_vec_dict):
+	X = []
+	# Y = []
+	# print tweets
+	for tweet in tweets:
+		# dummy_tweet = [tweet['target'].lower()]
+		# dummy_tweet.extend(tweet['tweet'])
+		# print oldWork.getSumVectors(dummy_tweet, word_vec_dict)
+		tweet = tweet.split(' ')
+		x = word_vec_dict['hi']
+		x = x * 0
+		for word in tweet:
+			x = x + oldWork.getWordVector(word, word_vec_dict)
+		X.append(x)
+		# if tweet['stance'] == 'AGAINST':
+			# Y.append(-1)
+		# elif tweet['stance'] == 'FOR':
+			# Y.append(1)
+		# else:
+			# Y.append(0)
+	# print len(X)
+	# print len(tweets)
+	print X
+	nrc = readLexicon('./nrc_unigram.txt')
+	# print nrc
+	s140 = readLexicon('./s140_unigram.txt')
+	# print s140
+	sumPos = 0
+	sumNeg = 0
+	numPos = 0
+	numNeg = 0
+	maxPos = -1
+	maxNeg = 1
+	maxPosIndex = 0
+	maxNegIndex = 0
+	for i in xrange(len(tweets)):
+		sumPos = 0
+		sumNeg = 0
+		numPos = 0
+		numNeg = 0
+		maxPos = -1
+		maxNeg = 1
+		maxPosIndex = 0
+		maxNegIndex = 0
+
+		tweet = tweets[i]
+		tweet = tweet.split()
+		# print tweet
+		for j in xrange(len(tweet)):
+			word = tweet[j]
+			if word in nrc:
+				if nrc[word] > 0:
+					numPos += 1
+					if nrc[word] > maxPos:
+						maxPos = nrc[word]
+						maxPosIndex = j
+				elif nrc[word] < 0:
+					numNeg += 1
+					if nrc[word] < maxNeg:
+						maxNeg = nrc[word]
+						maxNegIndex = j
+			elif word in s140:
+				if s140[word] > 0:
+					numPos += 1
+					if s140[word] > maxPos:
+						maxPos = s140[word]
+						maxPosIndex = j
+				elif s140[word] < 0:
+					numNeg += 1
+					if s140[word] < maxNeg:
+						maxNeg = s140[word]
+						maxNegIndex = j
+		# np.concatenate(X[i], oldWork.getWordVector(tweet[maxPosIndex], word_vec_dict))
+		# np.concatenate(X[i], oldWork.getWordVector(tweet[maxNegIndex], word_vec_dict))
+		# np.concatenate(X[i], numPos/len(tweet))
+		# np.concatenate(X[i], numNeg/len(tweet))
+		X[i] = X[i].tolist()
+		# print X[i]
+		# print 'index ' + str(maxPosIndex)
+		# print len(tweet)
+		X[i].extend(oldWork.getWordVector(tweet[maxPosIndex], word_vec_dict))
+		X[i].extend(oldWork.getWordVector(tweet[maxNegIndex], word_vec_dict))
+		X[i].append(numPos/len(tweet))
+		X[i].append(numNeg/len(tweet))
+		print len(X[i])
+	# print X
+
+
+
+	# print X
+	# for index in xrange(len(taggedTweets)):
+
+
 def main():
-	sentiment = SentiWordNet('./SentiWordNet_3.0.0_20130122.txt')
-	taggedTweets = getTaggedTweets('./splitTaggedTweets.txt')
+	# sentiment = SentiWordNet('./SentiWordNet_3.0.0_20130122.txt')
+	taggedTweets = getTaggedTweets('./splitTaggedTweets2.txt')
+	taggedTweets = addTarget(taggedTweets,'./dataset_raw/semeval2016-task6-edited-trainingdata.txt')
+	writer = open('./final.txt','w')
+	for tweet in taggedTweets:
+		writer.write(' '.join(tweet['tweet']))
+		writer.write('\t')
+		writer.write(tweet['stance'])
+		writer.write('\n')
 	word_vec_dict = oldWork.readGloveData('./glove.twitter.27B/glove.twitter.27B.25d.txt')
-	
+	tweets = [taggedTweet['tweet'] for taggedTweet in taggedTweets]
+	for i in xrange(len(tweets)):
+		tweets[i] = ' '.join(tweets[i])
+	getFeatures(tweets, word_vec_dict)
 
 if __name__ == '__main__':
 	main()
