@@ -1,6 +1,5 @@
 # import defaultdict
 import IntermediateProjectWork as oldWork
-import enchant
 from nltk.stem import *
 from nltk.stem.porter import *
 import numpy as np
@@ -78,7 +77,7 @@ def SentiWordNet(filename):
 	fileReader = open(filename)
 	dictionary = {}
 	for line in fileReader:
-		
+
 		if line[0] == '#':
 			continue
 		splitLine = line.strip().split('\t')
@@ -147,7 +146,6 @@ def getFeatures(tweets, word_vec_dict):
 		# dummy_tweet = [tweet['target'].lower()]
 		# dummy_tweet.extend(tweet['tweet'])
 		# print oldWork.getSumVectors(dummy_tweet, word_vec_dict)
-		tweet = tweet.split(' ')
 		x = word_vec_dict['hi']
 		x = x * 0
 		for word in tweet:
@@ -161,7 +159,7 @@ def getFeatures(tweets, word_vec_dict):
 			# Y.append(0)
 	# print len(X)
 	# print len(tweets)
-	print X
+	# print X
 	nrc = readLexicon('./nrc_unigram.txt')
 	# print nrc
 	s140 = readLexicon('./s140_unigram.txt')
@@ -185,7 +183,7 @@ def getFeatures(tweets, word_vec_dict):
 		maxNegIndex = 0
 
 		tweet = tweets[i]
-		tweet = tweet.split()
+
 		# print tweet
 		for j in xrange(len(tweet)):
 			word = tweet[j]
@@ -223,8 +221,9 @@ def getFeatures(tweets, word_vec_dict):
 		X[i].extend(oldWork.getWordVector(tweet[maxNegIndex], word_vec_dict))
 		X[i].append(numPos/len(tweet))
 		X[i].append(numNeg/len(tweet))
-		print len(X[i])
-	# print X
+		#print len(X[i])
+
+        return X
 
 
 
