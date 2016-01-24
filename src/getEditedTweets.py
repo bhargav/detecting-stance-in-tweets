@@ -2,7 +2,7 @@ import os
 import sys
 import IntermediateProjectWork as oldWork
 
-origTweetFile = './dataset_raw/semeval2016-task6-trainingdata.txt'
+origTweetFile = '../dataset_raw/semeval2016-task6-trainingdata.txt'
 
 origTweets = oldWork.readTweets(origTweetFile)
 origTweetClasses = origTweets[len(origTweets) - 1]
@@ -10,10 +10,10 @@ origTweets = origTweets[:len(origTweets) - 1]
 
 origTweetReader = open(origTweetFile)
 
-taggedTweetFile = './tweetsTagged.txt'
+taggedTweetFile = '../tweetsTagged.txt'
 taggedTweetReader = open(taggedTweetFile)
 
-outputFile = './dataset_raw/semeval2016-task6-edited-trainingdata.txt'
+outputFile = '../dataset_raw/semeval2016-task6-edited-trainingdata.txt'
 outputWriter = open(outputFile, 'w')
 
 origLine = origTweetReader.readline()

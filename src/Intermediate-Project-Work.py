@@ -13,14 +13,14 @@ def readGloveData(glove_word_vec_file):
         tag = line[0]
         vec = line[1:]
         word_vec_dict[tag] = np.array(vec, dtype=float)
-            
+
     return word_vec_dict
 
 def getWordVector(word, word_vec_dict):
     if word in word_vec_dict:
         return word_vec_dict[word]
     return np.zeros_like(word_vec_dict['hi'])
-    
+
 def readTweets(fileName):
     file = open(fileName, 'r')
     raw_tweets = []
@@ -34,7 +34,7 @@ def readTweets(fileName):
         tweet2.append(tweet[0])
         tweet2.append(tweet[1])
         tweet2.extend(tweet[2].strip().replace(',',' ').replace('.',' ').replace(':', ' ').split(' '))
-        tweet2.append(tweet[3])    
+        tweet2.append(tweet[3])
         tweets.append(tweet2[1:len(tweet2) - 1])
         tweetClass.append(tweet[len(tweet) - 1])
     tweets.append(tweetClass)
@@ -72,11 +72,11 @@ def getSumVectors(tweetData, word_vec_dict):
 
 def splitTweets(tweets):
     pass
-    
+
 
 def main():
-    word_vec_dict = readGloveData('./glove.twitter.27B/glove.twitter.27B.25d.txt')
-    tweets = readTweets('./dataset_raw/semeval2016-task6-trainingdata.txt')
+    word_vec_dict = readGloveData('../glove.twitter.27B/glove.twitter.27B.25d.txt')
+    tweets = readTweets('../dataset_raw/semeval2016-task6-trainingdata.txt')
 
     tweetVectors = getTweetVectors(tweets[0:len(tweets) - 1], word_vec_dict)
     print tweets[0]

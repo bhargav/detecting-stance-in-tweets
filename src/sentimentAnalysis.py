@@ -160,9 +160,9 @@ def getFeatures(tweets, word_vec_dict):
 	# print len(X)
 	# print len(tweets)
 	# print X
-	nrc = readLexicon('./nrc_unigram.txt')
+	nrc = readLexicon('../nrc_unigram.txt')
 	# print nrc
-	s140 = readLexicon('./s140_unigram.txt')
+	s140 = readLexicon('../s140_unigram.txt')
 	# print s140
 	sumPos = 0
 	sumNeg = 0
@@ -233,15 +233,15 @@ def getFeatures(tweets, word_vec_dict):
 
 def main():
 	# sentiment = SentiWordNet('./SentiWordNet_3.0.0_20130122.txt')
-	taggedTweets = getTaggedTweets('./splitTaggedTweets2.txt')
-	taggedTweets = addTarget(taggedTweets,'./dataset_raw/semeval2016-task6-edited-trainingdata.txt')
+	taggedTweets = getTaggedTweets('../splitTaggedTweets2.txt')
+	taggedTweets = addTarget(taggedTweets,'../dataset_raw/semeval2016-task6-edited-trainingdata.txt')
 	writer = open('./final.txt','w')
 	for tweet in taggedTweets:
 		writer.write(' '.join(tweet['tweet']))
 		writer.write('\t')
 		writer.write(tweet['stance'])
 		writer.write('\n')
-	word_vec_dict = oldWork.readGloveData('./glove.twitter.27B/glove.twitter.27B.25d.txt')
+	word_vec_dict = oldWork.readGloveData('../glove.twitter.27B/glove.twitter.27B.25d.txt')
 	tweets = [taggedTweet['tweet'] for taggedTweet in taggedTweets]
 	for i in xrange(len(tweets)):
 		tweets[i] = ' '.join(tweets[i])
